@@ -24,17 +24,34 @@ app.post("/bank", async (req, res) => {
   } catch (err) {
     console.error(err.message);
   }
+ 
 });
 
-// "INSERT INTO bank (transaction_name, transaction_amount, transaction_date) VALUES ('apple', 30, '2022-10-10');"
-// "DELETE FROM bank WHERE transaction_id = 1;"
+app.post("/myfunds", async (req, res) => {
+  try {
+    const { funds } = req.body;
+    const newFunds = await pool.query(
+      "INSERT INTO myfunds (funds) VALUES($1) RETURNING *",
+      [funds]
+    );
 
-//Get all inovices
+    res.json(newFunds.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+  }
+ 
+});
+
+
 
 app.get("/bank", async (req, res) => {
     try {
-      const allBanks = await pool.query("SELECT * FROM transactions");
-      res.json(allBanks.rows);
+      const allBanks = await pool.query("SELECT * FROM transactions ORDER BY date");
+      const sumFunds = await pool.query("SELECT SUM (amount) FROM transactions");
+      res.json({
+        allBanks: allBanks.rows,
+        sumFunds: sumFunds.rows[0].sum
+      });
     } catch (err) {
       console.error(err.message);
     }

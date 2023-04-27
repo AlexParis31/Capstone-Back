@@ -31,7 +31,7 @@ app.post("/myfunds", async (req, res) => {
   try {
     const { funds } = req.body;
     const newFunds = await pool.query(
-      "INSERT INTO myfunds (funds) VALUES($1) RETURNING *",
+      "UPDATE myfunds SET funds = funds + $1 WHERE transaction_id = 1",
       [funds]
     );
 
@@ -46,12 +46,21 @@ app.post("/myfunds", async (req, res) => {
 
 app.get("/bank", async (req, res) => {
     try {
-      const allBanks = await pool.query("SELECT * FROM transactions ORDER BY date");
+      const allBanks = await pool.query("SELECT * FROM transactions ORDER BY date DESC");
       const sumFunds = await pool.query("SELECT SUM (amount) FROM transactions");
       res.json({
         allBanks: allBanks.rows,
         sumFunds: sumFunds.rows[0].sum
       });
+    } catch (err) {
+      console.error(err.message);
+    }
+  });
+
+app.get("/myfunds", async (req, res) => {
+    try {
+      const allFunds = await pool.query("SELECT * FROM myfunds WHERE transaction_id = 1");
+      res.json(allFunds.rows);
     } catch (err) {
       console.error(err.message);
     }

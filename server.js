@@ -35,13 +35,12 @@ app.post("/myfunds", async (req, res) => {
       [funds]
     );
 
-    res.json(newFunds.rows[0]);
+    res.json(newFunds);
   } catch (err) {
     console.error(err.message);
   }
  
 });
-
 
 
 app.get("/bank", async (req, res) => {
@@ -65,7 +64,6 @@ app.get("/myfunds", async (req, res) => {
       console.error(err.message);
     }
   });
-  
 
 //Get a invoice
 

@@ -14,10 +14,10 @@ app.use(express.json());
 
 app.post("/bank", async (req, res) => {
   try {
-    const { name, amount, date } = req.body;
+    const { name, amount, date, category } = req.body;
     const newBank = await pool.query(
-      "INSERT INTO transactions (name, amount, date) VALUES($1, $2, $3) RETURNING *",
-      [name, amount, date]
+      "INSERT INTO transactions (name, amount, date, category) VALUES($1, $2, $3, $4) RETURNING *",
+      [name, amount, date, category]
     );
 
     res.json(newBank.rows[0]);
@@ -87,10 +87,10 @@ app.get("/bank/:id", async (req, res) => {
 app.put("/bank/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      const { name, amount, date } = req.body;
+      const { name, amount, date, category } = req.body;
       const updateBank = await pool.query(
-        "UPDATE transactions SET name = $1, amount = $2, date = $3 WHERE transaction_id = $4",
-        [name, amount, date, id]
+        "UPDATE transactions SET name = $1, amount = $2, date = $3, category = $4 WHERE transaction_id = $5",
+        [name, amount, date, category, id]
       );
   
       res.json("Bank was updated!");

@@ -10,6 +10,14 @@ app.use(express.json());
 
 //ROUTES//
 
+// register and login routes
+
+app.use("/auth", require("./routes/jwtAuth"));
+
+// dashboard route
+
+app.use("/dashboard", require("./routes/dashboard"));
+
 //Create Invoice
 
 app.post("/bank", async (req, res) => {

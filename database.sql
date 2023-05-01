@@ -23,3 +23,39 @@ CREATE TABLE users (
 );
 
 INSERT INTO users (user_name, user_email, user_password) VALUES ('alex', 'parisialexander@gmail.com', 'crm18882' );
+
+
+
+
+
+CREATE TABLE jusers (
+    user_id uuid DEFAULT uuid_generate_v4(),
+    user_name VARCHAR(255) NOT NULL,
+    user_email VARCHAR(255) NOT NULL UNIQUE,
+    user_password VARCHAR(255) NOT NULL,
+    PRIMARY KEY (user_id)
+);
+
+CREATE TABLE jbanks (
+    bank_id SERIAL,
+    user_id UUID,
+    name VARCHAR(255) NOT NULL,
+    amount NUMERIC(12,2), 
+    date VARCHAR(30), 
+    category VARCHAR(30),
+    PRIMARY KEY (bank_id),
+    FOREIGN KEY (user_id) REFERENCES jusers(user_id)
+);
+
+INSERT INTO jusers (user_name, user_email, user_password) VALUES ('jacob', 'jacob123@gmail.com', 'crm18882');
+
+INSERT INTO jbanks (user_id, name) VALUES ('7447c79a-2ccb-4942-bc07-a47201a608f4', 'uber');
+
+
+CREATE TABLE jfunds (
+    fund_id SERIAL,
+    user_id UUID,
+    funds DECIMAL NOT NULL,
+    PRIMARY KEY (fund_id),
+    FOREIGN KEY (user_id) REFERENCES jusers(user_id)
+);

@@ -17,7 +17,7 @@ router.post("/register", validInfo ,async (req,res) => {
 
         //2. check if user exists (if user exists then throw error)
 
-        const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [
+        const user = await pool.query("SELECT * FROM jusers WHERE user_email = $1", [
             email
         ]);
 
@@ -34,7 +34,7 @@ router.post("/register", validInfo ,async (req,res) => {
 
         //4. enter the new user inside our database
 
-        const newUser = await pool.query ("INSERT INTO users (user_name, user_email, user_password) VALUES ($1, $2, $3) RETURNING *", [name, email, bcryptPassword]);
+        const newUser = await pool.query ("INSERT INTO jusers (user_name, user_email, user_password) VALUES ($1, $2, $3) RETURNING *", [name, email, bcryptPassword]);
 
         //5. generating our jwt token
 
@@ -59,7 +59,7 @@ router.post("/login", validInfo, async (req,res) => {
 
         //2. check if user does not exist (if not, throw error)
 
-        const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [
+        const user = await pool.query("SELECT * FROM jusers WHERE user_email = $1", [
             email
         ]);
 

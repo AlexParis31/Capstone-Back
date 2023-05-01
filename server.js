@@ -18,29 +18,11 @@ app.use("/auth", require("./routes/jwtAuth"));
 
 app.use("/dashboard", require("./routes/dashboard"));
 
-//Create Invoice
 
-app.post("/bank", async (req, res) => {
+app.post("/banktwo", async (req, res) => {
   try {
-    const { name, amount, date, category } = req.body;
-    const newBank = await pool.query(
-      "INSERT INTO transactions (name, amount, date, category) VALUES($1, $2, $3, $4) RETURNING *",
-      [name, amount, date, category]
-    );
-
-    res.json(newBank.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-  }
- 
-});
-
-app.post("/myfunds", async (req, res) => {
-  try {
-    const { funds } = req.body;
     const newFunds = await pool.query(
-      "UPDATE myfunds SET funds = funds + $1 WHERE transaction_id = 1",
-      [funds]
+      "CREATE TABLE transactionsTwo( transaction_id SERIAL PRIMARY KEY, name varchar(30), amount numeric(12,2), date varchar(30), category varchar(30))"
     );
 
     res.json(newFunds);
@@ -49,75 +31,6 @@ app.post("/myfunds", async (req, res) => {
   }
  
 });
-
-
-app.get("/bank", async (req, res) => {
-    try {
-      const allBanks = await pool.query("SELECT * FROM transactions ORDER BY date DESC");
-      const sumFunds = await pool.query("SELECT SUM (amount) FROM transactions");
-      res.json({
-        allBanks: allBanks.rows,
-        sumFunds: sumFunds.rows[0].sum
-      });
-    } catch (err) {
-      console.error(err.message);
-    }
-  });
-
-app.get("/myfunds", async (req, res) => {
-    try {
-      const allFunds = await pool.query("SELECT * FROM myfunds WHERE transaction_id = 1");
-      res.json(allFunds.rows);
-    } catch (err) {
-      console.error(err.message);
-    }
-  });
-
-//Get a invoice
-
-app.get("/bank/:id", async (req, res) => {
-    try {
-      const { id } = req.params;
-      const bank = await pool.query("SELECT * FROM transactions WHERE transaction_id = $1", [
-        id
-      ]);
-  
-      res.json(bank.rows[0]);
-    } catch (err) {
-      console.error(err.message);
-    }
-  });
-
-//Update a invoice
-
-app.put("/bank/:id", async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { name, amount, date, category } = req.body;
-      const updateBank = await pool.query(
-        "UPDATE transactions SET name = $1, amount = $2, date = $3, category = $4 WHERE transaction_id = $5",
-        [name, amount, date, category, id]
-      );
-  
-      res.json("Bank was updated!");
-    } catch (err) {
-      console.error(err.message);
-    }
-  });
-
-//Delete a invoice
-
-app.delete("/bank/:id", async (req, res) => {
-    try {
-      const { id } = req.params;
-      const deleteBank = await pool.query("DELETE FROM transactions WHERE transaction_id = $1", [
-        id
-      ]);
-      res.json("Bank was deleted!");
-    } catch (err) {
-      console.log(err.message);
-    }
-  });
 
 
 app.listen(3000, () => {

@@ -134,10 +134,6 @@ router.post("/fundscreate", authorization, async (req, res) => {
 
   router.get("/budgetplans", authorization, async (req, res) => {
     try {
-        // const user = await pool.query("SELECT user_name FROM users WHERE user_id = $1", [
-        //     req.user.id
-        // ]);
-
         const user = await pool.query("SELECT jbudget.budget_id, jbudget.category, jbudget.budget FROM jusers LEFT JOIN jbudget ON jusers.user_id = jbudget.user_id WHERE jusers.user_id = $1",
         [req.user.id]
         );
@@ -148,6 +144,36 @@ router.post("/fundscreate", authorization, async (req, res) => {
         console.error(err.message);
         res.status(500).json("server error");
     }
+});
+
+router.get("/bgtex", authorization, async (req, res) => {
+  try {
+      const user = await pool.query("SELECT jusers.user_name, jbgtex.bank_id, jbgtex.name, jbgtex.amount, jbgtex.date, jbgtex.category FROM jusers LEFT JOIN jbgtex ON jusers.user_id = jbgtex.user_id WHERE jusers.user_id = $1 ORDER BY date DESC",
+      [req.user.id]
+      );
+
+      res.json(user.rows);
+      
+  } catch (error) {
+      console.error(err.message);
+      res.status(500).json("server error");
+  }
+});
+
+router.post("/bgtex", authorization, async (req, res) => {
+  try {
+      console.log(req.body);
+    const { name, amount, date, category } = req.body;
+    const newBank = await pool.query(
+      "INSERT INTO jbgtex (user_id, name, amount, date, category) VALUES($1, $2, $3, $4, $5) RETURNING *",
+      [req.user.id, name, amount, date, category]
+    );
+
+    res.json(newBank.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+  }
+ 
 });
 
 // Get the amount of funds in your account

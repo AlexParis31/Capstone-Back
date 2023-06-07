@@ -99,6 +99,21 @@ router.get("/expenses", authorization, async (req, res) => {
     }
 });
 
+// router.get("/bgtsum", authorization, async (req, res) => {
+//   try {
+  
+//       const user = await pool.query("SELECT SUM(jbgtex.amount) AS sum FROM jbudget LEFT JOIN jbgtex ON jbudget.user_id = jbgtex.user_id AND jbgtex.category = jbudget.category WHERE jbudget.user_id = $1 AND jbgtex.category = 'food'",
+//       [req.user.id ]
+//       );
+
+//       res.json({ funds: user.rows[0].sum });
+      
+//   } catch (error) {
+//       console.error(err.message);
+//       res.status(500).json("server error");
+//   }
+// });
+
 // Create a funds account
 
 router.post("/fundscreate", authorization, async (req, res) => {
@@ -175,6 +190,21 @@ router.post("/bgtex", authorization, async (req, res) => {
   }
  
 });
+
+router.get("/bgtsum", authorization, async (req, res) => {
+  try {
+      const user = await pool.query("SELECT category, SUM(amount) AS total_amount FROM jbgtex WHERE user_id = $1 GROUP BY category;",
+      [req.user.id]
+      );
+
+      res.json(user.rows);
+      
+  } catch (error) {
+      console.error(err.message);
+      res.status(500).json("server error");
+  }
+});
+
 
 // Get the amount of funds in your account
 

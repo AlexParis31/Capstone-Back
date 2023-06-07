@@ -59,3 +59,12 @@ CREATE TABLE jfunds (
     PRIMARY KEY (fund_id),
     FOREIGN KEY (user_id) REFERENCES jusers(user_id)
 );
+
+CREATE TABLE jbudget (
+    budget_id SERIAL,
+    user_id UUID,
+    category VARCHAR(30),
+    budget DECIMAL NOT NULL,
+    PRIMARY KEY (budget_id),
+    FOREIGN KEY (user_id) REFERENCES jusers(user_id)
+);

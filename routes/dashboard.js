@@ -115,6 +115,40 @@ router.post("/fundscreate", authorization, async (req, res) => {
    
   });
 
+  // create a budget
+
+  router.post("/budgetplan", authorization, async (req, res) => {
+    try {
+      const { category, budget } = req.body;
+      const newBank = await pool.query(
+        "INSERT INTO jbudget (user_id, category, budget) VALUES($1, $2, $3) RETURNING *",
+        [req.user.id, category, budget]
+      );
+  
+      res.json(newBank.rows[0]);
+    } catch (err) {
+      console.error(err.message);
+    }
+   
+  });
+
+  router.get("/budgetplans", authorization, async (req, res) => {
+    try {
+        // const user = await pool.query("SELECT user_name FROM users WHERE user_id = $1", [
+        //     req.user.id
+        // ]);
+
+        const user = await pool.query("SELECT jbudget.budget_id, jbudget.category, jbudget.budget FROM jusers LEFT JOIN jbudget ON jusers.user_id = jbudget.user_id WHERE jusers.user_id = $1",
+        [req.user.id]
+        );
+
+        res.json(user.rows);
+        
+    } catch (error) {
+        console.error(err.message);
+        res.status(500).json("server error");
+    }
+});
 
 // Get the amount of funds in your account
 

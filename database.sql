@@ -36,7 +36,7 @@ CREATE TABLE jusers (
     PRIMARY KEY (user_id)
 );
 
-CREATE TABLE jbanks (
+CREATE TABLE jbgtex (
     bank_id SERIAL,
     user_id UUID,
     name VARCHAR(255) NOT NULL,
@@ -68,3 +68,12 @@ CREATE TABLE jbudget (
     PRIMARY KEY (budget_id),
     FOREIGN KEY (user_id) REFERENCES jusers(user_id)
 );
+
+
+
+
+
+SELECT category, SUM(amount) AS total_amount
+FROM jbgtex
+WHERE user_id = 'e869ec5c-aa9d-4810-a2f7-f74281450020'
+GROUP BY category;

@@ -77,3 +77,5 @@ SELECT category, SUM(amount) AS total_amount
 FROM jbgtex
 WHERE user_id = 'e869ec5c-aa9d-4810-a2f7-f74281450020'
 GROUP BY category;
+
+INSERT INTO jbgtex (user_id, name, amount, date, category) VALUES('e869ec5c-aa9d-4810-a2f7-f74281450020', 'null', 0, 0, 'null') RETURNING *
